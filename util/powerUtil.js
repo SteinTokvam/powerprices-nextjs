@@ -36,6 +36,7 @@ export async function makeList(zone, hasPassed) {
             })
             .map(price => ({
                 from: price.time_start,
+                to: price.time_end,
                 price_nok: price.NOK_per_kWh,
                 zone: price.time_start ? zone : null
             }));
