@@ -38,6 +38,8 @@ export async function makeList(zone, hasPassed, until) {
                     return new Date(price.time_end) > new Date() && new Date(price.time_start) <= new Date(until)
                 } else if(until != null){
                     return new Date(price.time_start) <= new Date(until)
+                } else if (hasPassed) {
+                    return new Date(price.time_end) > new Date()
                 }
                 return true
             })
