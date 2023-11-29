@@ -21,19 +21,23 @@ function hentStrompriser(date, zone) {
 export async function makeList(zone, hasPassed, until) {
     try {
         const prices = await hentStrompriser(new Date(), zone);
-        const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
-        const pricesTomorrow = await hentStrompriser(tomorrow, zone);
-        const allPrices = [...prices, ...pricesTomorrow];
+        var allPrices = null
+        if(new Date().getHours() >= 13) {
+            const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
+            const pricesTomorrow = await hentStrompriser(tomorrow, zone);
+            allPrices = [...prices, ...pricesTomorrow];
+        } else {
+            allPrices = prices
+        }
 
         if (allPrices.length > 0) {
             const pricesNOK = allPrices
             .filter(price => price.NOK_per_kWh)
             .filter(price => {
-                if(hasPassed === 'true') {
-                    return new Date(price.time_start) > new Date()
-                }
-                if(until != null){
-                    return new Date(price.time_start) <= until
+                if(hasPassed && until != null) {
+                    return new Date(price.time_end) > new Date() && new Date(price.time_start) <= new Date(until)
+                } else if(until != null){
+                    return new Date(price.time_start) <= new Date(until)
                 }
                 return true
             })
