@@ -18,7 +18,7 @@ function hentStrompriser(date, zone) {
         });
 }
 
-export async function makeList(zone, hasPassed) {
+export async function makeList(zone, hasPassed, until) {
     try {
         const prices = await hentStrompriser(new Date(), zone);
         const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
@@ -31,6 +31,9 @@ export async function makeList(zone, hasPassed) {
             .filter(price => {
                 if(hasPassed === 'true') {
                     return new Date(price.time_start) > new Date()
+                }
+                if(until != null){
+                    return new Date(price.time_start) <= until
                 }
                 return true
             })
